@@ -2,6 +2,13 @@ def calculateRequiredGrade(average):
     required_grade = 10 - average
     return max(required_grade, 0)
 
+def calculateAverage(line):
+    grade1 = int(sheet.cell(line, 4).value)
+    grade2 = int(sheet.cell(line, 5).value)
+    grade3 = int(sheet.cell(line, 6).value)
+    studentAverage = (grade1 + grade2 + grade3) / 3
+    return studentAverage 
+
 def studentData():
     # Function Variables
     all_values = sheet.get_all_values()  # Get the total number of lines from the XLSX file
@@ -13,10 +20,7 @@ def studentData():
     # Loop to go through all the necessary lines
     while i < totalLines:
         # Get the scores to generate an average that will later be used to determine the student's situation
-        grade1 = int(sheet.cell(line, 4).value)
-        grade2 = int(sheet.cell(line, 5).value)
-        grade3 = int(sheet.cell(line, 6).value)
-        studentAverage = (grade1 + grade2 + grade3) / 3
+        studentAverage = calculateAverage(line)
 
         # Calculate Minimum Attendance and percentage required for Non-Reproval
         minimumAttendancePercentage = (25 / 100) * totalSemesterClasses
