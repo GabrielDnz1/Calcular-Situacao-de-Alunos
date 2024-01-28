@@ -1,66 +1,67 @@
-def calcularNotaNecessaria(media):
-    nota_necessaria = 10 - media
-    return max(nota_necessaria, 0)
+def calculateRequiredGrade(average):
+    required_grade = 10 - average
+    return max(required_grade, 0)
 
-def dadosDosAlunos():
-    all_values = sheet.get_all_values()
-    NTotaldeLinhas = len(all_values) - 3
-    linha = 4
-    i = 0
-    totalDeAulasDoSemestre = 60
+def studentData():
+    # Function Variables
+    all_values = sheet.get_all_values()  # Get the total number of lines from the XLSX file
+    totalLines = len(all_values) - 3  # Get the integer number of lines by subtracting the number of lines without content
+    line = 4  # Value defined from the beginning of the required data
+    i = 0  # Counter
+    totalSemesterClasses = 60  # Fixed number of classes in the semester
 
-    while i < NTotaldeLinhas:
-        # Obter as pontuações para gerar uma média que posteriormente será utilizada para gerar a situação do aluno
-        pontuacao1 = int(sheet.cell(linha, 4).value)
-        pontuacao2 = int(sheet.cell(linha, 5).value)
-        pontuacao3 = int(sheet.cell(linha, 6).value)
-        MediaDasNotasDoAluno = (pontuacao1 + pontuacao2 + pontuacao3) / 3
+    # Loop to go through all the necessary lines
+    while i < totalLines:
+        # Get the scores to generate an average that will later be used to determine the student's situation
+        grade1 = int(sheet.cell(line, 4).value)
+        grade2 = int(sheet.cell(line, 5).value)
+        grade3 = int(sheet.cell(line, 6).value)
+        studentAverage = (grade1 + grade2 + grade3) / 3
 
-        # Calcular Minimo de Presença nas aulas e porcentagem necessária para a Não-Reprovação
-        porcentagemDePresencaMinima = (25 / 100) * totalDeAulasDoSemestre
-        faltasDoAluno = int(sheet.cell(linha, 3).value)
+        # Calculate Minimum Attendance and percentage required for Non-Reproval
+        minimumAttendancePercentage = (25 / 100) * totalSemesterClasses
+        studentAbsences = int(sheet.cell(line, 3).value)
 
-        # Calculo da Nota Final
-        notaNecessariaCalculada = calcularNotaNecessaria(MediaDasNotasDoAluno)
-        print(notaNecessariaCalculada)
+        # Final Grade Calculation
+        calculatedRequiredGrade = calculateRequiredGrade(studentAverage)
+        sheet.cell(line, 8).value = calculatedRequiredGrade
 
-        # Condicionais visando atualização pelo sheet.cell().value da situação do aluno e de sua nota para aprovação final
-        if faltasDoAluno < porcentagemDePresencaMinima:
-            sheet.cell(linha, 7).value = "Reprovado por Falta"
-            sheet.cell(linha, 8).value = "0"
-        elif MediaDasNotasDoAluno < 50 and faltasDoAluno >= porcentagemDePresencaMinima:
-            sheet.cell(linha, 7).value = "Reprovado por Nota"
-            sheet.cell(linha, 8).value = "0"
-        elif 50 <= MediaDasNotasDoAluno < 70 and faltasDoAluno >= porcentagemDePresencaMinima:
-            sheet.cell(linha, 7).value = "Exame Final"
-            sheet.cell(linha, 8).value = "0"
-        elif MediaDasNotasDoAluno >= 70 and faltasDoAluno >= porcentagemDePresencaMinima:
-            sheet.cell(linha, 7).value = "Aprovado"
-            sheet.cell(linha, 8).value = "0"
+        # Conditionals aiming at updating the student's status and final approval grade by sheet.cell().value
+        if studentAbsences < minimumAttendancePercentage:
+            sheet.cell(line, 7).value = "Reprovado por Falta"
+            sheet.cell(line, 8).value = "0"
+        elif studentAverage < 50 and studentAbsences >= minimumAttendancePercentage:
+            sheet.cell(line, 7).value = "Reprovado por Nota"
+            sheet.cell(line, 8).value = "0"
+        elif 50 <= studentAverage < 70 and studentAbsences >= minimumAttendancePercentage:
+            sheet.cell(line, 7).value = "Exame Final"
+            sheet.cell(line, 8).value = "0"
+        elif studentAverage >= 70 and studentAbsences >= minimumAttendancePercentage:
+            sheet.cell(line, 7).value = "Aprovado"
+            sheet.cell(line, 8).value = "0"
 
-        # Contadores
-        linha += 1
+        # Counters
+        line += 1
         i += 1
 
+import math
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+
+# Variables
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
 client = gspread.authorize(creds)
+spreadsheet_name = "Software Engineering - Challenge Gabriel Augusto Diniz Barbosa"
 
-spreadsheet_name = "Engenharia de Software – Desafio Gabriel Augusto Diniz Barbosa"
-
+# Attempt to open the spreadsheet or catch possible exceptions
 try:
     sheet = client.open(spreadsheet_name).sheet1
-    dadosDosAlunos()
+# if it does not detect an error, the function is called
+    studentData()
 
 except gspread.exceptions.SpreadsheetNotFound:
-    print(f"Erro: Planilha '{spreadsheet_name}' não encontrada.")
+    print(f"Error: Spreadsheet '{spreadsheet_name}' not found.")
 except Exception as e:
-    print(f"Ocorreu um erro: {e}")
-
-
-
-
-
+    print(f"An error occurred: {e}")
