@@ -15,9 +15,4 @@
   <strong>pip install gspread</strong><br>
   <strong>pip install gspread oauth2client</strong><br>
   <strong>py ./spreadsheet.py</strong>
-    
-<<<<<<< HEAD
-</div>
-=======
-</div>
->>>>>>> 15f270dde6217f4fb2d86507f7d585b0a700b6c6
+  
