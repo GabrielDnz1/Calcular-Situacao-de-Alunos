@@ -44,7 +44,6 @@ def studentData():
         line += 1
         i += 1
 
-import math
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -53,7 +52,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
 client = gspread.authorize(creds)
-spreadsheet_name = "Software Engineering - Challenge Gabriel Augusto Diniz Barbosa"
+spreadsheet_name = "Engenharia de Software – Desafio Gabriel Augusto Diniz Barbosa" # Spreadsheet Name
 
 # Attempt to open the spreadsheet or catch possible exceptions
 try:
